@@ -1,0 +1,7 @@
+---
+# Master playbook to install Apache
+
+- hosts: la
+  become: yes
+  roles:
+    - apache-webserver

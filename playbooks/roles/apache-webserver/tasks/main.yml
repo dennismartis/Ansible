@@ -1,2 +1,8 @@
 ---
 # tasks file for apache-webserver
+- name: Install Apache
+  yum:
+    pkg: httpd
+    state: latest
+  notify:
+    - Restart HTTPD
