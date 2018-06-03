@@ -1,0 +1,12 @@
+---
+# tasks file for epel-release
+#- name: import epel key
+#  rpm_key:
+#      key: /etc/pki/rpm-gpg/RPM-GPG-KEY* # required. Key that will be modified. Can be a url, a file, or a keyid if the key already exists in the database.
+#      validate_certs: yes # not required. If C(no) and the C(key) is a url starting with https, SSL certificates will not be validated. This should only be used on personally controlled sites using self-signed certificates.
+#      state: present # not required. choices: absent;present. If the key will be imported or removed from the rpm db.
+
+- name: Enable epel repo
+  yum:
+      name: epel-release # required. A package name , or package specifier with version, like C(name-1.0).,If a previous version is specified, the task also needs to turn C(allow_downgrade) on. See the C(allow_downgrade) documentation for caveats with downgrading packages.,When using state=latest, this can be '*' which means run C(yum -y update).,You can also pass a url or a local path to a rpm file (using state=present). To operate on several packages this can accept a comma separated list of packages or (as of 2.0) a list of packages.
+      state: latest # not required. choices: absent;installed;latest;present;removed. Whether to install (C(present) or C(installed), C(latest)), or remove (C(absent) or C(removed)) a package.
