@@ -1,0 +1,67 @@
+---
+
+- hosts: single
+  become: yes
+  vars:
+    webpage: 'http://34.253.226.13'
+    new_certificate: /home/ansible/test # Located on the local server
+    old_certificate: /home/ansible/cert # Located on remote server
+  tasks:
+    - uri: url='{{ webpage }}' return_content='yes'
+      register: status
+    - name: Fail if Hello World is not in the page content
+      fail:
+      when: "'Hello World' not in status.content"
+    - name: restart HAProxy
+      service:
+        name: haproxy
+        state: restarted
+    - uri: url='{{ webpage }}' return_content='yes'
+      register: status
+    - name: Fail if Hello World is not in the page content
+      fail:
+      when: "'Hello World' not in status.content"
+    - name: Copy new certificate to server
+      copy:
+        src: "{{ new_certificate }}"
+        dest: /home/ansible/tmpcert
+    - name: Collect content of the old certificate
+      shell: "cat {{ old_certificate }} | grep -A1 'begin of certificate' | grep -v certificate"
+      register: oldcert
+    - name: Collect the content of the new certificate
+      shell: "cat /home/ansible/tmpcert | grep -A1 'begin of certificate' | grep -v certificate"
+      register: newcert
+    - name: Get date to use for timestamp in backup file
+      command: date +'%Y%m%d'
+      register: date
+    - name: Create backup of old certificate with timestamp
+      copy:
+        remote_src: yes
+        src: "{{ old_certificate }}"
+        dest: /home/ansible/cert{{ date.stdout }}
+    - uri: url='{{ webpage }}' return_content='yes'
+      register: status
+    - name: Fail if Hello World is not in the page content
+      fail:
+      when: "'Hello World' not in status.content"
+    - name: Replace old certificate with new one
+      lineinfile: 
+        path: "{{ old_certificate }}"
+        regexp: "{{ oldcert.stdout }}"
+        line: "{{ newcert.stdout }}"
+    - name: restart HAProxy
+      service:
+        name: haproxy
+        state: restarted
+    - uri: url='{{ webpage }}' return_content='yes'
+      register: status
+    - name: Restore backup certificate
+      copy:
+        remote_src: yes
+        dest: "{{ old_certificate }}"
+        src: /home/ansible/cert{{ date.stdout }}
+      when: "'Hello World' not in status.content"
+    - name: Remove temporary file
+      file:
+        path: /home/ansible/tmpcert
+        state: absent
