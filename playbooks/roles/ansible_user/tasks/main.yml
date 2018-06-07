@@ -11,7 +11,7 @@
 - name: Create Ansible user
   user:
       name: ansible # required. Name of the user to create, remove or modify.
-      password: "{{ new_password.stdout }}" #{{ new_password.stdout }}" not required. Optionally set the user's password to this crypted value.  See the user example in the github examples directory for what this looks like in a playbook. See U(http://docs.ansible.com/ansible/faq.html#how-do-i-generate-crypted-passwords-for-the-user-module) for details on various ways to generate these password values. Note on Darwin system, this value has to be cleartext. Beware of security issues.
+      password: "{{ passwords.linuxacademy }}" #{{ new_password.stdout }}" not required. Optionally set the user's password to this crypted value.  See the user example in the github examples directory for what this looks like in a playbook. See U(http://docs.ansible.com/ansible/faq.html#how-do-i-generate-crypted-passwords-for-the-user-module) for details on various ways to generate these password values. Note on Darwin system, this value has to be cleartext. Beware of security issues.
       generate_ssh_key: yes # not required. Whether to generate a SSH key for the user in question. This will B(not) overwrite an existing SSH key.
       update_password: always # not required. choices: always;on_create. C(always) will update passwords if they differ.  C(on_create) will only set the password for newly created users.
       comment: Ansible user # not required. Optionally sets the description (aka I(GECOS)) of user account.

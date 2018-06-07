@@ -8,3 +8,4 @@
     ansible_become_pass: "{{ passwords.linuxacademy }}"
   roles:
     - ansible_user
+    - epel_repo
