@@ -9,3 +9,5 @@
   roles:
     - ansible_user
     - epel_repo
+    - base
+    - oh-my-zsh
