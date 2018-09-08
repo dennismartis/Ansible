@@ -1,0 +1,13 @@
+---
+
+- hosts: la
+  vars:
+    database_name_here: wordpress
+    username_here: wordpress
+    password_here: mypassword1
+    dbhost_here: 172.31.108.177
+  tasks:
+    - name: Copy wp-config.php to /home/ansible
+      template:
+        src: templates/template2.j2
+        dest: /home/ansible/wp-config.php
