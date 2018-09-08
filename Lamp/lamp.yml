@@ -1,7 +1,0 @@
----
-# Playbook to install Lamp Stack on RHEL/CentOS7
-- hosts: apache-web
-  remote_user: ansible
-  become: yes
-  roles:
-    - epel-release
