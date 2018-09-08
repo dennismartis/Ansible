@@ -1,2 +1,4 @@
-[webservers]
-testserver ansible_host=127.0.0.1 ansible_port=2222 
+[vagrant]
+vagrant1 ansible_host=192.168.192.44 ansible_port=2222 
+vagrant2 ansible_host=192.168.192.44 ansible_port=2220 
+vagrant3 ansible_host=192.168.192.44 ansible_port=2221 
