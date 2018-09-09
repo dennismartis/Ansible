@@ -1,4 +1,4 @@
 [vagrant]
-vagrant1 ansible_host=192.168.192.44 ansible_port=2222 
-vagrant2 ansible_host=192.168.192.44 ansible_port=2220 
-vagrant3 ansible_host=192.168.192.44 ansible_port=2221 
+vagrant1 ansible_host=172.17.177.21 ansible_port=22
+vagrant2 ansible_host=172.17.177.22 ansible_port=22
+vagrant3 ansible_host=172.17.177.23 ansible_port=22
