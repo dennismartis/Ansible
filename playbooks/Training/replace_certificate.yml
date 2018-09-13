@@ -1,0 +1,29 @@
+---
+- name: Replace certificate
+  hosts: testserver
+
+  vars:
+    certificate_path: /tmp/certificate
+    url: https://www.3aliens.net
+    new_certificate: "{{ lookup('file', 'files/cert.pem') }}"
+    
+  tasks:
+    - name: Copy new certificate to server
+      replace: path={{ certificate_path }} regexp="-----BEGIN CERTIFICATE-----[^<]*-----END CERTIFICATE-----" replace={{ new_certificate }} backup=yes
+      register: replace
+    - debug: msg={{ replace }}
+
+    - name: Reload httpd
+      service: name=httpd state=reloaded
+
+    - name: Collect the contents of the webpage
+      uri: url='{{ url }}' return_content='yes'
+      register: webpage
+    - debug: msg={{ webpage }}
+
+    - name: Restore original certificate
+      copy: remote_src=yes src={{ replace.backup_file }} dest={{ certificate_path }} backup=yes
+      when: "'The site is a test site' is not in webpage.content"
+    
+    - name: Reload httpd
+      service: name=httpd state=reloaded
