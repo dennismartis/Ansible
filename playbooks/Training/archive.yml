@@ -1,0 +1,18 @@
+---
+- hosts: node-1
+  become: yes
+  vars:
+    - path: /tmp
+    - destination: /tmp/backup/
+    
+  tasks:
+    - name: find files
+      find: path="{{ path }}" age=2d recurse=yes
+      register: old_tmp_files
+      
+    - name: check backup directory
+      file: name=/tmp/backup state=directory mode=0655
+      
+    - name: compress files
+      archive: path="{{ item.path }}" dest=/tmp/backup/{{ item.path | basename }}.gz remove=yes
+      loop: "{{ old_tmp_files.files }}"
