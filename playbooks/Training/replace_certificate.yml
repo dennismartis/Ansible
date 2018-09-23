@@ -12,23 +12,23 @@
   tasks:
     - name: Replace the certificate on the server
       replace: path={{ certificate_path }} regexp="-----BEGIN CERTIFICATE-----[^<]*-----END CERTIFICATE-----" replace={{ new_certificate }} backup=yes
-      register: result
+      register: replace_status
 
     - name: Reload the httpd service
       service: name=httpd state=reloaded
-      when: result is changed
+      when: replace_status is changed
 
     - name: Collect the contents of the webpage
       uri: url='{{ url }}' return_content='yes'
-      register: webpage
-      failed_when: "'The site is a test site' not in webpage.content"
+      register: webpage_check
+      failed_when: "'The site is a test site' not in webpage_check.content"
       ignore_errors: yes
-      when: result is changed
+      when: replace_status is changed
 
     - name: Restore original certificate if the website does not work
-      copy: remote_src=yes src={{result.backup_file }} dest={{ certificate_path }} backup=yes
-      when: webpage is failed and result is changed 
+      copy: remote_src=yes src={{ replace_status.backup_file }} dest={{ certificate_path }} backup=yes
+      when: webpage_check is failed and replace_status is changed 
     
     - name: Reload httpd after restoring original certificate
       service: name=httpd state=reloaded
-      when: webpage is failed and result is changed 
+      when: webpage_check is failed and replace_status is changed 
